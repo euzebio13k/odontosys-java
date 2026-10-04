@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://thymeleaf.org" xmlsn:layout="http://www.utraq.net.nz/thymeleaf/layout">
+    <head>
+        <!-- Importa o CSS e o título dinâmico do fragmento 'cabecalho' -->
+        <th:block th:replace="~{fragments/template :: cabecalho('Cadastro de Pacientes')}"></th:block>
+    </head>
+    
+    <body>
+    
+        <!-- Importa o Menu Padrão -->
+        <header th:replace="~{fragments/template :: menu}"></header>
+    
+        <!-- CONTEÚDO ESPECÍFICO DESTA PÁGINA -->
+        <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-custom p-4">
+                  
+                    <h3 th:text="${paciente.id != null} ? 'Editar Paciente' : 'Novo Paciente'" class="mb-4 text-primary"><i class="fa-solid fa-user-plus me-2"></i> Cadastrar Paciente</h3>
+                    <form th:action="@{/paciente/salvar}" th:object="${paciente}" method="post">
+                        <div class="row g-3">
+                            <!-- IMPORTANTE: Campo oculto que armazena o ID para permitir a edição -->
+                            <input type="hidden" th:field="*{id}" />
+                            <div class="col-md-6">
+                                <label class="form-label">Nome Completo *</label>
+                                <input th:field="*{nome}" type="text" class="form-control" required placeholder="Ex: Maria Oliveira">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CPF *</label>
+                                <input type="text" th:field="*{cpf}" class="form-control" required placeholder="000.000.000-00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Telefone *</label>
+                                <input type="text" th:field="*{telefone}" class="form-control" required placeholder="(11) 99999-9999">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">E-mail *</label>
+                                <input type="email" th:field="*{email}" class="form-control" required placeholder="exemplo@email.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Data de Nascimento *</label>
+                                <input type="date" th:field="*{data_nascimento}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Endereço *</label>
+                                <input type="text" th:field="*{endereco}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Convênio</label>
+                                <input type="text" th:field="*{convenio}" class="form-control" placeholder="Deixe em branco se Particular">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Observação / Alergias</label>
+                                <textarea th:field="*{observacao}" class="form-control" rows="3" placeholder="Alergia a medicamentos, hipertensão, etc."></textarea>
+                            </div>
+                            <div class="col-12 text-end mt-4">
+                                <a href="index.php" class="btn btn-secondary me-2">Cancelar</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i> Salvar Paciente</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="mb-5">
+            
+        </div>
+    </main>
+
+    <!-- Importa o Rodapé Padrão -->
+    <footer th:replace="~{fragments/template :: rodape}"></footer>
+</body>
+</html>

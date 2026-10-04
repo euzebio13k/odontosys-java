@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://thymeleaf.org" xmlsn:layout="http://www.utraq.net.nz/thymeleaf/layout">
+    <head>
+        <!-- Importa o CSS e o título dinâmico do fragmento 'cabecalho' -->
+        <th:block th:replace="~{fragments/template :: cabecalho('Cadastro de Pacientes')}"></th:block>
+    </head>
+    
+    <body>
+    
+        <!-- Importa o Menu Padrão -->
+        <header th:replace="~{fragments/template :: menu}"></header>
+    
+    <main class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-custom p-4">
+
+                    <h3 th:text="${agenda.id != null} ? 'Editar Agenda' : 'Novo Agenda'" class="mb-4 text-primary"><i
+                            class="fa-solid fa-user-plus me-2"></i> Cadastrar Agenda</h3>
+                    <form th:action="@{/agenda/salvar}" th:object="${agenda}" method="post">
+                        <div class="row g-3">
+                            <!-- IMPORTANTE: Campo oculto que armazena o ID para permitir a edição -->
+                            <input type="hidden" th:field="*{id}" />
+                            <div class="col-md-6">
+                                <label class="form-label">Data e Hora *</label>
+                                <input th:field="*{data_hora}" type="datetime-local" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Paciente:</label>
+                                <select id="paciente" th:field="*{paciente}" class="form-select">
+                                    <!-- Opção padrão desabilitada -->
+                                    <option value="">Selecione o Paciente...</option>
+                                    <!-- Iteração dinâmicamente das opções -->
+                                    <option th:each="p : ${pacientes}" th:value="${p.id}" th:text="${p.nome}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Dentista:</label>
+                                <select id="dentista" th:field="*{dentista}" class="form-select">
+                                    <!-- Opção padrão desabilitada -->
+                                    <option value="">Selecione o Dentista...</option>
+                                    <!-- Iteração dinâmicamente das opções -->
+                                    <option th:each="d : ${dentistas}" th:value="${d.id}" th:text="${d.nome}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end mt-4">
+                                <a th:href="@{/agenda/listar}" class="btn btn-secondary me-2">Cancelar</a>
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>
+                                    Salvar Agenda</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="mb-5">
+
+        </div>
+    </main>
+
+    <!-- FRAGMENTO DO RODAPÉ -->
+    <footer th:fragment="rodape"
+        class="footer bg-secondary mt-auto py-3 border-top text-center text-white fixed-bottom">
+        <div class="container">
+            <small>&copy; 2026 Consultório Odontológico OdontoSys - Todos os direitos reservados.</small>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>

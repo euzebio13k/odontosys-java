@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+
+<head>
+    <!-- Importa o CSS e o título dinâmico do fragmento 'cabecalho' -->
+    <th:block th:replace="~{fragments/template :: cabecalho('Lista de Agendas')}"></th:block>
+</head>
+
+<body>
+
+    <!-- Importa o Menu Padrão -->
+    <header th:replace="~{fragments/template :: menu}"></header>
+
+    <!-- CONTEÚDO ESPECÍFICO DESTA PÁGINA -->
+    <main class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fa-solid fa-user-injured text-primary me-2"></i> Lista de Agendas</h2>
+            <a href="/agenda/cadastrar" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i> Novo Agenda</a>
+        </div>
+
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            Agenda cadastrado com sucesso!
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div class="card card-custom p-3">
+            <form method="GET">
+                <div class="row my-4">
+                    <div class="col">
+                        <label>Buscar agenda</label>
+                        <input type="text" name="busca" class="form-control" value="">
+                    </div>
+                    <div class="col-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            
+                            <th>Data e Hora</th>
+                            <th>Dentista</th>
+                            <th>Paciente</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <div th:each="agenda : ${agendas}">
+                            <tr>
+                                <td th:text="${#temporals.format(agenda.data_hora, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td><span th:text="${agenda.dentista.nome}"></span></td>
+                                <td><span th:text="${agenda.paciente.nome}"></span></td>
+                                <td class="text-end"><a th:href="@{/agenda/editar/{id}(id=${agenda.id})}">
+                                <i class="fa-solid fa-pencil me-1"></i></a>
+                                    <a th:href="@{/agenda/excluir/{id}(id=${agenda.id})}"
+                                    onclick="return confirm('Tem certeza que deseja excluir o Agenda?');">
+                                <i class="fa-solid fa-trash text-danger me-1"></i></a></td>
+                            </tr>
+                        </div>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <!-- Importa o Rodapé Padrão -->
+    <footer th:replace="~{fragments/template :: rodape}"></footer>
+</body>
+</html>
