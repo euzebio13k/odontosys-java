@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt" xmlns:th="http://thymeleaf.org" xmlsn:layout="http://www.utraq.net.nz/thymeleaf/layout">
+<html lang="pt" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <head>
-        <!-- Importa o CSS e o título dinâmico do fragmento 'cabecalho' -->
-        <th:block th:replace="~{fragments/template :: cabecalho('Cadastro de Pacientes')}"></th:block>
+        <th:block th:replace="~{fragments/template :: cabecalho('Cadastro de Consulta')}"></th:block>
     </head>
     
-    <body>
-    
-        <!-- Importa o Menu Padrão -->
+    <body class="d-flex flex-column min-vh-100">
         <header th:replace="~{fragments/template :: menu}"></header>
     
     <main class="container">
@@ -15,42 +12,41 @@
             <div class="col-md-8">
                 <div class="card card-custom p-4">
 
-                    <h3 th:text="${consulta.id != null} ? 'Editar Consulta' : 'Novo Consulta'"
+                    <h3 th:text="${consulta.id != null} ? 'Editar Consulta' : 'Nova Consulta'"
                         class="mb-4 text-primary"><i class="fa-solid fa-user-plus me-2"></i> Cadastrar Consulta</h3>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Paciente:</label>
-                            <p th:text="*{consulta.paciente.nome}" class="form-control" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Dentista:</label>
-                            <p th:text="*{consulta.dentista.nome}" class="form-control" required>
-                        </div>
-                    </div>
+                    
                     <form th:action="@{/consulta/salvar}" th:object="${consulta}" method="post">
+                        <!-- Campos Ocultos para Transporte de IDs -->
+                        <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" name="dentistaId" th:value="${consulta.dentista?.id}" />
+                        <input type="hidden" name="pacienteId" th:value="${consulta.paciente?.id}" />
+
                         <div class="row g-3">
-                            <!-- IMPORTANTE: Campo oculto que armazena o ID para permitir a edição -->
-                            <input type="hidden" th:field="*{id}" />
-                            <input type="hidden" th:field="*{dentista}" />
-                            <input type="hidden" th:field="*{paciente}" />
+                            <div class="col-md-6">
+                                <label class="form-label">Paciente:</label>
+                                <p th:text="${consulta.paciente?.nome}" class="form-control mb-0 bg-light"></p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Dentista:</label>
+                                <p th:text="${consulta.dentista?.nome}" class="form-control mb-0 bg-light"></p>
+                            </div>
+
                             <div class="col-md-6">
                                 <label class="form-label">Descrição da consulta *</label>
                                 <textarea th:field="*{descricao}" rows="4" class="form-control" required></textarea>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Medicação prescrita </label>
+                                <label class="form-label">Medicação prescrita</label>
                                 <textarea th:field="*{medicacao}" rows="4" class="form-control"></textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Procedimentos Realizados *</label>
-                                <textarea th:field="*{procedimentos_realizados}" rows="4" class="form-control"
-                                    required></textarea>
+                                <textarea th:field="*{procedimentos_realizados}" rows="4" class="form-control" required></textarea>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Procedimentos a Realizar </label>
-                                <textarea th:field="*{procedimentos_arealizar}" rows="4"
-                                    class="form-control"></textarea>
+                                <label class="form-label">Procedimentos a Realizar</label>
+                                <textarea th:field="*{procedimentos_arealizar}" rows="4" class="form-control"></textarea>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Forma de Pagamento</label>
@@ -72,28 +68,22 @@
                             </div>
                             <div class="col-12 text-end mt-4">
                                 <a th:href="@{/consulta/listar}" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i>
-                                    Salvar Consulta</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-save me-1"></i> Salvar Consulta
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="mb-5">
-
-        </div>
+        <div class="mb-5"></div>
     </main>
 
-    <!-- FRAGMENTO DO RODAPÉ -->
-    <footer th:fragment="rodape"
-        class="footer bg-secondary mt-auto py-3 border-top text-center text-white fixed-bottom">
+    <footer th:fragment="rodape" class="footer bg-secondary mt-auto py-3 border-top text-center text-white fixed-bottom">
         <div class="container">
             <small>&copy; 2026 Consultório Odontológico OdontoSys - Todos os direitos reservados.</small>
         </div>
     </footer>
-
-
 </body>
-
 </html>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.pegasus.odontosys.model.Paciente;
@@ -41,12 +42,20 @@ public class PacienteController {
     }
 
     @GetMapping("/listar")
-    public ModelAndView listaPacientes() {
-        ModelAndView mv = new ModelAndView("paciente/index");
-        List<Paciente> pacientes = pacienteRepository.findAll(Sort.by("nome"));
-        mv.addObject("pacientes", pacientes);
-        return mv;
+public ModelAndView listarPacientes(@RequestParam(name = "busca", required = false) String busca) {
+    ModelAndView mv = new ModelAndView("paciente/index"); // Ajuste o caminho da página se necessário
+    List<Paciente> pacientes;
+
+    if (busca != null && !busca.trim().isEmpty()) {
+        pacientes = pacienteRepository.findByNomeContainingIgnoreCase(busca);
+    } else {
+        pacientes = pacienteRepository.findAll();
     }
+
+    mv.addObject("pacientes", pacientes);
+    mv.addObject("busca", busca); // Devolve o termo buscado para manter o valor no input
+    return mv;
+}
 
     @GetMapping(value = "/{id}")
     public ModelAndView detalhesPaciente(@PathVariable("id") Integer id) {

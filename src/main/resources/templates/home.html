@@ -6,7 +6,7 @@
     <th:block th:replace="~{fragments/template :: cabecalho('Lista de Agendas')}"></th:block>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <!-- Importa o Menu Padrão -->
     <header th:replace="~{fragments/template :: menu}"></header>
@@ -15,7 +15,7 @@
     <main class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2><i class="fa-solid fa-user-injured text-primary me-2"></i> Lista de Agendas</h2>
-            <a href="/agenda/cadastrar" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i> Novo Agenda</a>
+            <a th:href="@{/agenda/cadastrar}" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i> Novo Agenda</a>
         </div>
 
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -40,7 +40,6 @@
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            
                             <th>Data e Hora</th>
                             <th>Dentista</th>
                             <th>Paciente</th>
@@ -48,20 +47,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <div th:each="agenda : ${agendas}">
-                            <tr>
-                                <td th:text="${#temporals.format(agenda.data_hora, 'dd/MM/yyyy HH:mm')}"></td>
-                                <td><span th:text="${agenda.dentista.nome}"></span></td>
-                                <td><span th:text="${agenda.paciente.nome}"></span></td>
-                                <td class="text-end"><a th:href="@{/consulta/cadastrar/{id}(id=${agenda.id})}">
-                                <i class="fa-solid fa-user-md me-1"></i></a>
-                                <a th:href="@{/agenda/editar/{id}(id=${agenda.id})}">
-                                    <i class="fa-solid fa-pencil me-1"></i></a>
-                                    <a th:href="@{/agenda/excluir/{id}(id=${agenda.id})}"
-                                    onclick="return confirm('Tem certeza que deseja excluir o Agenda?');">
-                                <i class="fa-solid fa-trash text-danger me-1"></i></a></td>
-                            </tr>
-                        </div>
+                        <!-- Colocado th:each diretamente na tr -->
+                        <tr th:each="agenda : ${agendas}">
+                            <td th:text="${#temporals.format(agenda.data_hora, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td><span th:text="${agenda.dentista?.nome}"></span></td>
+                            <td><span th:text="${agenda.paciente?.nome}"></span></td>
+                            <td class="text-end">
+                                <!-- Sintaxe correta para múltiplos PathVariables no Thymeleaf -->
+                                <a th:href="@{/consulta/cadastrar/{dentistaId}/{pacienteId}(dentistaId=${agenda.dentista.id}, pacienteId=${agenda.paciente.id})}" title="Iniciar Consulta">
+                                    <i class="fa-solid fa-user-md me-1"></i>
+                                </a>
+                                <a th:href="@{/agenda/editar/{id}(id=${agenda.id})}" title="Editar">
+                                    <i class="fa-solid fa-pencil me-1"></i>
+                                </a>
+                                <a th:href="@{/agenda/excluir/{id}(id=${agenda.id})}"
+                                   onclick="return confirm('Tem certeza que deseja excluir o Agenda?');" title="Excluir">
+                                    <i class="fa-solid fa-trash text-danger me-1"></i>
+                                </a>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

@@ -9,44 +9,67 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.pegasus.odontosys.model.Agenda;
 import com.pegasus.odontosys.model.Consulta;
-import com.pegasus.odontosys.repository.AgendaRepository;
+import com.pegasus.odontosys.model.Funcionario;
+import com.pegasus.odontosys.model.Paciente;
 import com.pegasus.odontosys.repository.ConsultaRepository;
+import com.pegasus.odontosys.repository.FuncionarioRepository;
+import com.pegasus.odontosys.repository.PacienteRepository;
 
 @Controller
-@RequestMapping("consulta")
+@RequestMapping("/consulta")
 public class ConsultaController {
 
     @Autowired
     ConsultaRepository consultaRepository;
     @Autowired 
-    AgendaRepository agendaRepository;
+    FuncionarioRepository funcionarioRepository;
+    @Autowired 
+    PacienteRepository pacienteRepository;
     
-    @GetMapping("/cadastrar/{id}")
-    public ModelAndView form(@PathVariable("id") Integer id) {
+    @GetMapping("/cadastrar/{dentistaId}/{pacienteId}")
+    public ModelAndView form(@PathVariable("dentistaId") Integer dentistaId, @PathVariable("pacienteId") Integer pacienteId) {
         ModelAndView mv = new ModelAndView("consulta/form");
-        // O SEGREDO ESTÁ AQUI: Passar uma nova instância do objeto!
-        Agenda agenda = agendaRepository.findById(id).orElseThrow();
+        
+        Funcionario dentista = funcionarioRepository.findById(dentistaId).orElseThrow();
+        Paciente paciente = pacienteRepository.findById(pacienteId).orElseThrow();
+        
         Consulta consulta = new Consulta();
-        consulta.setDentista(agenda.getDentista());
-        consulta.setPaciente(agenda.getPaciente());
-           System.out.println("Dentista = "+consulta.getDentista().getNome());
-            System.out.println("Paciente = "+consulta.getPaciente().getNome());
+        consulta.setDentista(dentista);
+        consulta.setPaciente(paciente);
         
         mv.addObject("consulta", consulta);
         return mv;
     }
 
-
-    @PostMapping(value = "/salvar")
-    public String form(Consulta consulta) {
-        consultaRepository.save(consulta);
-        return "redirect:/consulta/listar";
+    @PostMapping("/salvar")
+public String salvar(Consulta consulta, 
+                     @RequestParam(value = "dentistaId", required = false) Integer dentistaId, 
+                     @RequestParam(value = "pacienteId", required = false) Integer pacienteId) {
+    
+    // Se vieram os IDs pelo formulário (cadastro novo), carrega e vincula
+    if (dentistaId != null) {
+        Funcionario dentista = funcionarioRepository.findById(dentistaId).orElseThrow();
+        consulta.setDentista(dentista);
     }
-
+    if (pacienteId != null) {
+        Paciente paciente = pacienteRepository.findById(pacienteId).orElseThrow();
+        consulta.setPaciente(paciente);
+    }
+    
+    // Se for edição e não vieram via param, garante a persistência das entidades originais
+    if (consulta.getId() != null && (consulta.getDentista() == null || consulta.getPaciente() == null)) {
+        Consulta consultaExistente = consultaRepository.findById(consulta.getId()).orElseThrow();
+        if (consulta.getDentista() == null) consulta.setDentista(consultaExistente.getDentista());
+        if (consulta.getPaciente() == null) consulta.setPaciente(consultaExistente.getPaciente());
+    }
+    
+    consultaRepository.save(consulta);
+    return "redirect:/consulta/listar";
+}
     @GetMapping("/listar")
     public ModelAndView listaConsultas() {
         ModelAndView mv = new ModelAndView("consulta/index");

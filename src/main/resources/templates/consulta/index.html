@@ -6,7 +6,7 @@
     <th:block th:replace="~{fragments/template :: cabecalho('Lista de Consultas')}"></th:block>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <!-- Importa o Menu Padrão -->
     <header th:replace="~{fragments/template :: menu}"></header>
@@ -44,6 +44,10 @@
                             <th>Data e Hora</th>
                             <th>Dentista</th>
                             <th>Paciente</th>
+                            <th>Descricao</th>
+                            <th>Medicação</th>
+                            <th>Procedimentos Realizados</th>
+                            <th>Procedimentos a Realizar</th>
                             <th>Forma de Pagamento</th>
                             <th>Valor da consulta</th>
                             <th>Valor pago</th>
@@ -57,9 +61,13 @@
                                 <td th:text="${#temporals.format(consulta.data_hora, 'dd/MM/yyyy HH:mm')}"></td>
                                 <td><span th:text="${consulta.dentista.nome}"></span></td>
                                 <td><span th:text="${consulta.paciente.nome}"></span></td>
-                                <td><span th:text="${consulta.forma_pagamento}"></span></a></td>
-                                <td><span th:text="${consulta.valor_total}"></span></a></td>
-                                <td><span th:text="${consulta.valor_pago}"></span></a></td>
+                                <td><span th:text="${consulta.descricao}"></span></td>
+                                <td><span th:text="${consulta.medicacao}"></span></td>
+                                <td><span th:text="${consulta.procedimentos_realizados}"></span></td>
+                                <td><span th:text="${consulta.procedimentos_arealizar}"></span></td>
+                                <td><span th:text="${consulta.forma_pagamento}"></span></td>
+                                <td><span th:text="${consulta.valor_total}"></span></td>
+                                <td><span th:text="${consulta.valor_pago}"></span></td>
                                 <td><span th:text="${consulta.valor_total - consulta.valor_pago}"></span></a></td>
                                 <td class="text-end"><a th:href="@{/consulta/editar/{id}(id=${consulta.id})}">
                                 <i class="fa-solid fa-pencil me-1"></i></a>
