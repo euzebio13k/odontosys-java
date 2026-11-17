@@ -16,7 +16,7 @@ import com.pegasus.odontosys.model.Paciente;
 import com.pegasus.odontosys.repository.PacienteRepository;
 
 @Controller
-@RequestMapping("paciente")
+@RequestMapping("/paciente")
 public class PacienteController {
 
     @Autowired
